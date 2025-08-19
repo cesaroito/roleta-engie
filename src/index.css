@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  background: #f7fafc;
+}
+
+/* Trava visual para modo retrato 1080x1920 (ajusta em qualquer tela) */
+.app-portrait {
+  width: 100vw;
+  height: 100vh;
+  max-width: 1080px;
+  max-height: 1920px;
+  margin: 0 auto;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Suaviza a rotação da imagem da roleta */
+.wheel-img {
+  will-change: transform;
+  transform-origin: 50% 50%;
+  image-rendering: -webkit-optimize-contrast;
+}
