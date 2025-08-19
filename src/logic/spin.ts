@@ -16,18 +16,20 @@ export function centerDegOf(index: number) {
  * no ponteiro fixo no topo (0°). Retorna {target, duration}.
  * current é a rotação atual (deg). turns = voltas inteiras para estética.
  */
+// logic/spin.ts
 export function computeTargetRotation(
-  current: number,
+  currentRotation: number,
   winnerIndex: number,
-  turns = 6
+  turns: number
 ) {
-  const currentMod = ((current % 360) + 360) % 360;
-  const winnerCenter = centerDegOf(winnerIndex);
-  // Queremos que o centro do vencedor vá para 0° (ponteiro topo),
-  // então precisamos rotacionar a roda de modo que -winnerCenter (mod 360) alinhe no topo.
-  const deltaToAlign = (((-winnerCenter - currentMod) % 360) + 360) % 360;
-  const overshoot = Math.random() * 20 - 10; // -10° a +10° para naturalidade
-  const target = current + turns * 360 + deltaToAlign + overshoot;
-  const duration = 3.4 + Math.random() * 0.7; // 3.4s ~ 4.1s
+  const SLICE_COUNT = 12;
+  const SLICE_ANGLE = 360 / SLICE_COUNT; // 30°
+  const center = winnerIndex * SLICE_ANGLE + SLICE_ANGLE / 2;
+  const base = turns * 360 + (360 - center); // centraliza a fatia no ponteiro
+  const current = ((currentRotation % 360) + 360) % 360;
+  const diff = base - current;
+  const target = currentRotation + diff;
+
+  const duration = 4.8; // s — ajuste fino de suavidade
   return { target, duration };
 }

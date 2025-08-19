@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -7,22 +8,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["assets/*", "engie-logo.svg"],
       manifest: {
         name: "Roleta ENGIE",
         short_name: "Roleta",
-        description: "Roleta offline para evento ENGIE",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#00AEEF",
-        orientation: "portrait",
+        start_url: "/",
+        display: "fullscreen",
+        background_color: "#000000",
+        theme_color: "#0b0b0b",
         icons: [
-          { src: "icons/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "icons/icon-512.png", sizes: "512x512", type: "image/png" },
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
         ],
       },
-      workbox: { globPatterns: ["**/*.{js,css,html,png,svg,jpg,mp3,wav}"] },
     }),
   ],
 });

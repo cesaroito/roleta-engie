@@ -23,7 +23,7 @@ export default function QrScreen() {
 
   return (
     <div className="w-full h-full bg-white flex flex-col items-center justify-between py-8">
-      <img src="/engie-logo.svg" alt="ENGIE" className="h-12 mt-2" />
+      <img src="/engie-logo.png" alt="ENGIE" className="h-12 mt-2" />
       <div className="text-center px-6">
         <div className="text-2xl text-engieDark font-semibold mb-2">
           Siga nossa página e fique por dentro das nossas ações.

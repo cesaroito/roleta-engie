@@ -49,28 +49,25 @@ export default function WheelScreen() {
     spinAudio.current?.currentTime && (spinAudio.current.currentTime = 0);
     spinAudio.current?.play().catch(() => {});
 
-    gsap.to(
-      {},
-      {
-        // dummy para onUpdate fim do easing
-        duration,
-        ease: "power3.out",
-        onUpdate: () => {
-          const p = (gsap.getProperty({}, "progress") as number) || 0;
-          const now = currentRotation + (target - currentRotation) * p;
-          setRotation(now);
-          if (wheelRef.current)
-            wheelRef.current.style.transform = `rotate(${now}deg)`;
-        },
-        onComplete: () => {
-          setRotation(target);
-          if (wheelRef.current)
-            wheelRef.current.style.transform = `rotate(${target}deg)`;
-          setSpinning(false);
-          setScreen("result");
-        },
-      }
-    );
+    const tween = { p: 0 };
+    gsap.to(tween, {
+      p: 1,
+      duration,
+      ease: "power3.out",
+      onUpdate: () => {
+        const now = currentRotation + (target - currentRotation) * tween.p;
+        setRotation(now);
+        if (wheelRef.current)
+          wheelRef.current.style.transform = `rotate(${now}deg)`;
+      },
+      onComplete: () => {
+        setRotation(target);
+        if (wheelRef.current)
+          wheelRef.current.style.transform = `rotate(${target}deg)`;
+        setSpinning(false);
+        setScreen("result");
+      },
+    });
   }
 
   // Swipe muito simples (medimos velocidade linear ~ “força”)
@@ -98,7 +95,7 @@ export default function WheelScreen() {
     <div className="w-full h-full bg-gradient-to-b from-white to-sky-50 flex flex-col items-center justify-start">
       {/* Header com logo e chamada */}
       <div className="w-full px-6 py-4 flex items-center justify-between">
-        <img src="/engie-logo.svg" className="h-10" alt="ENGIE" />
+        <img src="/engie-logo.png" className="h-10" alt="ENGIE" />
         <div className="text-engieDark text-lg font-medium">
           Toque e gire a roleta
         </div>
@@ -110,7 +107,7 @@ export default function WheelScreen() {
         <div className="relative">
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
             <svg width="40" height="30" viewBox="0 0 40 30">
-              <polygon points="20,0 0,30 40,30" fill="#003A5D" />
+              <polygon points="0,0 40,0 20,30" fill="#003A5D" />
             </svg>
           </div>
 

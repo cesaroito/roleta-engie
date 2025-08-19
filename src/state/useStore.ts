@@ -1,27 +1,30 @@
 import { create } from "zustand";
 
 export type Screen = "wheel" | "result" | "qr";
+export type Slice = { id: number; label: string; kind: string };
 
-export interface Slice {
-  id: number;
-  label: string;
-  kind: "ACAO_ROXA" | "ACAO_ROSA" | "BEU" | "TRILHA" | "DESAFIO" | "QUIZ";
-}
-
-interface AppState {
+type AppState = {
   screen: Screen;
-  currentRotation: number; // graus absolutos aplicados à imagem
+  currentRotation: number; // em graus
+  isSpinning: boolean;
   winnerIndex: number | null;
   slices: Slice[];
-  setScreen: (s: Screen) => void;
+
+  // ações usadas nas telas
   setRotation: (deg: number) => void;
+  setScreen: (s: Screen) => void;
   setWinner: (i: number | null) => void;
-}
+
+  reset: () => void;
+};
 
 export const useStore = create<AppState>((set) => ({
   screen: "wheel",
   currentRotation: 0,
+  isSpinning: false,
   winnerIndex: null,
+
+  // >>> ORDEM CLOCKWISE a partir do topo (12h), batendo com sua imagem:
   slices: [
     { id: 0, label: "Trilha de carreiras femininas", kind: "TRILHA" },
     { id: 1, label: "Be.U@Engie", kind: "BEU" },
@@ -36,7 +39,16 @@ export const useStore = create<AppState>((set) => ({
     { id: 10, label: "Ação (Roxa)", kind: "ACAO_ROXA" },
     { id: 11, label: "Desafio", kind: "DESAFIO" },
   ],
-  setScreen: (s) => set({ screen: s }),
+
   setRotation: (deg) => set({ currentRotation: deg }),
+  setScreen: (s) => set({ screen: s }),
   setWinner: (i) => set({ winnerIndex: i }),
+
+  reset: () =>
+    set({
+      screen: "wheel",
+      currentRotation: 0,
+      isSpinning: false,
+      winnerIndex: null,
+    }),
 }));
