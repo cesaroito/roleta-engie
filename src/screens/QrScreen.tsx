@@ -1,9 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useStore } from "../state/useStore";
 
 const LINKEDIN_URL =
   "https://www.linkedin.com/company/engie-brasil/posts/?feedView=all";
+
+function Logo() {
+  return (
+    <img
+      src="/engie-logo.svg"
+      onError={(ev) => {
+        (ev.currentTarget as HTMLImageElement).src = "/engie-logo.png";
+      }}
+      className="h-10"
+      alt="ENGIE"
+    />
+  );
+}
 
 export default function QrScreen() {
   const { setScreen } = useStore();
@@ -17,30 +30,31 @@ export default function QrScreen() {
     })
       .then(setQr)
       .catch(() => setQr(""));
-    const t = setTimeout(() => setScreen("wheel"), 60 * 1000); // 1 minuto
+    const t = setTimeout(() => setScreen("wheel"), 60 * 1000);
     return () => clearTimeout(t);
   }, [setScreen]);
 
   return (
-    <div className="w-full h-full bg-white flex flex-col items-center justify-between py-8">
-      <img src="/engie-logo.png" alt="ENGIE" className="h-12 mt-2" />
-      <div className="text-center px-6">
-        <div className="text-2xl text-engieDark font-semibold mb-2">
+    <div className="w-full h-full bg-white flex flex-col">
+      <div className="w-full px-6 py-4 flex items-center justify-between">
+        <Logo />
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 px-6">
+        <div className="text-2xl text-[#003A5D] font-semibold text-center">
           Siga nossa página e fique por dentro das nossas ações.
         </div>
         {qr ? (
           <img
             src={qr}
             alt="QR Code"
-            className="mx-auto w-[480px] h-[480px] shadow-lg border"
+            className="w-[480px] h-[480px] shadow-lg border"
           />
         ) : (
           <div className="text-slate-500">Gerando QR...</div>
         )}
-      </div>
-      <div className="pb-6">
         <button
-          className="px-8 py-3 rounded-xl bg-engieBlue text-white text-xl font-semibold"
+          className="px-8 py-3 rounded-xl bg-[#00AEEF] text-white text-xl font-semibold"
           onClick={() => setScreen("wheel")}
         >
           VOLTAR PARA A ROLETA

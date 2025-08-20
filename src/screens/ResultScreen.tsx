@@ -2,6 +2,19 @@ import { useEffect, useRef } from "react";
 import { useStore } from "../state/useStore";
 import { gsap } from "gsap";
 
+function Logo() {
+  return (
+    <img
+      src="/engie-logo.svg"
+      onError={(ev) => {
+        (ev.currentTarget as HTMLImageElement).src = "/engie-logo.png";
+      }}
+      className="h-10"
+      alt="ENGIE"
+    />
+  );
+}
+
 function useAudio(src: string | null, volume = 1) {
   const ref = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
@@ -21,7 +34,6 @@ export default function ResultScreen() {
   const { winnerIndex, slices, setScreen } = useStore();
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  // Som de vitória
   const winAudio = useAudio("/assets/sfx/win.mp3", 0.5);
 
   useEffect(() => {
@@ -33,35 +45,43 @@ export default function ResultScreen() {
         { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" }
       );
     }
-    // Após alguns segundos vai para a tela do QR
     const t = setTimeout(() => setScreen("qr"), 5500);
     return () => clearTimeout(t);
   }, [setScreen]);
 
-  const label = winnerIndex != null ? slices[winnerIndex].label : "—";
+  const label =
+    winnerIndex != null && slices[winnerIndex]
+      ? slices[winnerIndex].label
+      : "—";
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-white">
-      <div
-        ref={cardRef}
-        className="w-[80%] max-w-[800px] rounded-2xl shadow-2xl p-8 text-center border"
-      >
-        {/* Aqui você pode usar sua imagem de referência de layout da tela 2 */}
-        <div className="text-3xl font-bold text-engieDark mb-3">Resultado</div>
-        <div className="text-5xl font-extrabold text-engieBlue mb-6">
-          {label}
-        </div>
-        <div className="text-slate-600">
-          Aguarde um instante... vamos te mostrar nosso QR
-        </div>
+    <div className="w-full h-full flex flex-col bg-white">
+      <div className="w-full px-6 py-4 flex items-center justify-between relative z-40">
+        <Logo />
+      </div>
 
-        <div className="mt-8">
-          <button
-            className="px-8 py-3 rounded-xl bg-engieBlue text-white text-xl font-semibold"
-            onClick={() => setScreen("qr")}
-          >
-            IR PARA QR CODE
-          </button>
+      <div className="flex-1 flex items-center justify-center">
+        <div
+          ref={cardRef}
+          className="w-[80%] max-w-[800px] rounded-2xl shadow-2xl p-8 text-center border"
+        >
+          <div className="text-3xl font-bold text-[#003A5D] mb-3">
+            Resultado
+          </div>
+          <div className="text-5xl font-extrabold text-[#00AEEF] mb-6">
+            {label}
+          </div>
+          <div className="text-slate-600">
+            Aguarde um instante... vamos te mostrar nosso QR
+          </div>
+          <div className="mt-8">
+            <button
+              className="px-8 py-3 rounded-xl bg-[#00AEEF] text-white text-xl font-semibold"
+              onClick={() => setScreen("qr")}
+            >
+              IR PARA QR CODE
+            </button>
+          </div>
         </div>
       </div>
     </div>

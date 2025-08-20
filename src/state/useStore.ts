@@ -1,54 +1,61 @@
 import { create } from "zustand";
 
-export type Screen = "wheel" | "result" | "qr";
-export type Slice = { id: number; label: string; kind: string };
+export type SliceKind =
+  | "TRILHA"
+  | "DESAFIO"
+  | "ACAO_ROXA"
+  | "QUIZ"
+  | "ACAO_ROSA"
+  | "BEU";
 
-type AppState = {
+export interface Slice {
+  id: number;
+  label: string;
+  kind: SliceKind;
+}
+
+type Screen = "wheel" | "result" | "qr";
+
+interface AppState {
+  // navegação
   screen: Screen;
-  currentRotation: number; // em graus
-  isSpinning: boolean;
-  winnerIndex: number | null;
-  slices: Slice[];
-
-  // ações usadas nas telas
-  setRotation: (deg: number) => void;
   setScreen: (s: Screen) => void;
+
+  // rotação atual (deg) — persistimos aqui para outras telas/usos
+  currentRotation: number;
+  setRotation: (deg: number) => void;
+
+  // último vencedor (índice 0..11)
+  winnerIndex: number | null;
   setWinner: (i: number | null) => void;
 
-  reset: () => void;
-};
+  // definição das 12 fatias (na ordem REAL da arte, sentido horário a partir do topo)
+  slices: Slice[];
+}
 
 export const useStore = create<AppState>((set) => ({
   screen: "wheel",
-  currentRotation: 0,
-  isSpinning: false,
-  winnerIndex: null,
+  setScreen: (s) => set({ screen: s }),
 
-  // >>> ORDEM CLOCKWISE a partir do topo (12h), batendo com sua imagem:
+  currentRotation: 0,
+  setRotation: (deg) => set({ currentRotation: deg }),
+
+  winnerIndex: null,
+  setWinner: (i) => set({ winnerIndex: i }),
+
+  // >>> ORDEM CALIBRADA (clockwise a partir do topo) — conforme você enviou <<<
   slices: [
     { id: 0, label: "Trilha de carreiras femininas", kind: "TRILHA" },
-    { id: 1, label: "Be.U@Engie", kind: "BEU" },
+    { id: 1, label: "Desafio", kind: "DESAFIO" },
     { id: 2, label: "Ação (Roxa)", kind: "ACAO_ROXA" },
     { id: 3, label: "Quiz", kind: "QUIZ" },
     { id: 4, label: "Ação (Rosa)", kind: "ACAO_ROSA" },
     { id: 5, label: "Desafio", kind: "DESAFIO" },
     { id: 6, label: "Trilha de carreiras femininas", kind: "TRILHA" },
     { id: 7, label: "Be.U@Engie", kind: "BEU" },
-    { id: 8, label: "Ação (Rosa)", kind: "ACAO_ROSA" },
+    { id: 8, label: "Ação (Roxa)", kind: "ACAO_ROXA" },
     { id: 9, label: "Desafio", kind: "DESAFIO" },
     { id: 10, label: "Ação (Roxa)", kind: "ACAO_ROXA" },
-    { id: 11, label: "Desafio", kind: "DESAFIO" },
+    { id: 11, label: "Be.U@Engie", kind: "BEU" },
   ],
-
-  setRotation: (deg) => set({ currentRotation: deg }),
-  setScreen: (s) => set({ screen: s }),
-  setWinner: (i) => set({ winnerIndex: i }),
-
-  reset: () =>
-    set({
-      screen: "wheel",
-      currentRotation: 0,
-      isSpinning: false,
-      winnerIndex: null,
-    }),
 }));
