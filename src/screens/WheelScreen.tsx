@@ -22,7 +22,7 @@ export default function WheelScreen() {
   const wheelRef = useRef<HTMLImageElement | null>(null);
   const [spinning, setSpinning] = useState(false);
 
-  const [holdProgress, setHoldProgress] = useState(0);
+  const [, setHoldProgress] = useState(0);
   const holdActiveRef = useRef(false);
   const holdStartRef = useRef(0);
   const holdRafRef = useRef<number | null>(null);

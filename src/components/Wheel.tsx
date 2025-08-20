@@ -1,5 +1,5 @@
 import wheelImg from "@/assets/wheel.jpg";
-import { useStore, SPIN_MS } from "@/store/useStore";
+import { useStore, SPIN_MS } from "@/state/useStore";
 
 export default function Wheel() {
   const rotation = useStore((s) => s.currentRotation);
@@ -8,9 +8,8 @@ export default function Wheel() {
 
   return (
     <div className="relative mx-auto w-[min(86vw,720px)] aspect-square select-none">
-      {/* Ponteiro fixo - apontando PARA BAIXO */}
+      {/* Ponteiro fixo - topo, apontando para baixo */}
       <div className="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-        {/* triângulo ↓ via border-top */}
         <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[28px] border-t-sky-500 drop-shadow-md" />
       </div>
 
@@ -36,7 +35,7 @@ export default function Wheel() {
       {/* Botão GIRAR */}
       <div className="absolute -bottom-20 left-1/2 -translate-x-1/2">
         <button
-          onClick={() => spinTo(null)}
+          onClick={() => spinTo()}
           disabled={isSpinning}
           className="px-6 py-3 rounded-2xl bg-sky-500 text-white font-semibold shadow disabled:opacity-50"
         >

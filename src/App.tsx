@@ -1,5 +1,5 @@
 import Wheel from "@/components/Wheel";
-import { useStore } from "@/store/useStore";
+import { useStore } from "@/state/useStore";
 
 export default function App() {
   const screen = useStore((s) => s.screen);
