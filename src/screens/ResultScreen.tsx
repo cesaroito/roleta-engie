@@ -33,7 +33,6 @@ function useAudio(src: string | null, volume = 1) {
 export default function ResultScreen() {
   const { winnerIndex, slices, setScreen } = useStore();
   const cardRef = useRef<HTMLDivElement | null>(null);
-
   const winAudio = useAudio("/assets/sfx/win.mp3", 0.5);
 
   useEffect(() => {
@@ -55,8 +54,9 @@ export default function ResultScreen() {
       : "—";
 
   return (
-    <div className="w-full h-full flex flex-col bg-white">
-      <div className="w-full px-6 py-4 flex items-center justify-between relative z-40">
+    <div className="w-full h-full bg-white flex flex-col">
+      {/* Header igual ao QrScreen, com z-index para não ser coberto */}
+      <div className="w-full px-6 py-4 flex items-center justify-between relative z-[100]">
         <Logo />
       </div>
 

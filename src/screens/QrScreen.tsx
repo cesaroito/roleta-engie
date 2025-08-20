@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useStore } from "../state/useStore";
 
-const LINKEDIN_URL =
-  "https://www.linkedin.com/company/engie-brasil/posts/?feedView=all";
+const LINKTREE_URL = "https://linktr.ee/userful";
 
 function Logo() {
   return (
@@ -23,7 +22,7 @@ export default function QrScreen() {
   const [qr, setQr] = useState<string>("");
 
   useEffect(() => {
-    QRCode.toDataURL(LINKEDIN_URL, {
+    QRCode.toDataURL(LINKTREE_URL, {
       errorCorrectionLevel: "M",
       margin: 2,
       scale: 10,

@@ -1,12 +1,10 @@
 // src/logic/spin.ts
-// Regras geométricas e cálculo da rotação alvo
-
 export const SECTOR_DEG = 360 / 12;
 
-// >>> Offset padrão de fábrica (ajuste para o valor que você definiu!)
-const START_CENTER_DEFAULT = 345; // <- se o seu valor for outro, altere aqui
+// >>> Use aqui o valor calibrado de fábrica (você informou 345):
+const START_CENTER_DEFAULT = 345;
 
-const POINTER_OFFSET_DEFAULT = 0; // ponteiro no topo (12h)
+const POINTER_OFFSET_DEFAULT = 0; // ponteiro às 12h
 
 export function getStartCenterDeg(): number {
   if (typeof window === "undefined") return START_CENTER_DEFAULT;
@@ -35,15 +33,15 @@ export function setPointerOffsetDeg(deg: number) {
   } catch {}
 }
 
-/** Ângulo CENTRAL (em graus) da fatia index (0..11), considerando o offset calibrado. */
+/** Centro (graus) da fatia index considerando o offset calibrado. */
 export function centerDegOf(index: number) {
   const start = getStartCenterDeg();
   return (start + index * SECTOR_DEG) % 360;
 }
 
 /**
- * Calcula a rotação-alvo para alinhar o centro do "winnerIndex" ao ponteiro.
- * O alvo FINAL é exato (sem overshoot).
+ * Leva o CENTRO da fatia `winnerIndex` para o ponteiro (0° + pointer).
+ * Alvo FINAL é exato.
  */
 export function computeTargetRotation(
   current: number,
@@ -52,24 +50,28 @@ export function computeTargetRotation(
 ) {
   const currentMod = ((current % 360) + 360) % 360;
   const winnerCenter = centerDegOf(winnerIndex);
-  const pointerOffset = getPointerOffsetDeg(); // 0° = ponteiro no topo
-  // levar winnerCenter -> (0° + pointerOffset)
-  const deltaToAlign =
-    (((-winnerCenter + pointerOffset - currentMod) % 360) + 360) % 360;
-  const target = current + turns * 360 + deltaToAlign;
+  const pointer = getPointerOffsetDeg(); // 0° = topo
+
+  // alvo_mod = pointer - winnerCenter   (pois -target + pointer ≡ winnerCenter)
+  const targetMod = (((pointer - winnerCenter) % 360) + 360) % 360;
+  const delta = (((targetMod - currentMod) % 360) + 360) % 360;
+
+  const target = current + turns * 360 + delta;
   const duration = 3.4 + Math.random() * 0.6;
   return { target, duration };
 }
 
 /**
- * A partir de uma rotação final (em graus), retorna o índice da fatia sob o ponteiro.
- * Usa arredondamento para o CENTRO mais próximo (robusto a micro difs).
+ * Converte rotação final (deg) -> índice no ponteiro.
+ * Usa mesma convenção de sinais da ida e "round para o centro".
  */
 export function winnerIndexFromRotation(rotationDeg: number): number {
   const start = getStartCenterDeg();
   const pointer = getPointerOffsetDeg();
-  // ângulo da imagem que está no ponteiro neste instante
-  const effective = (((-rotationDeg + pointer) % 360) + 360) % 360;
+
+  // qual ângulo da imagem está no ponteiro?
+  const effective = (((pointer - rotationDeg) % 360) + 360) % 360;
+
   let idx = Math.round((effective - start) / SECTOR_DEG);
   idx = ((idx % 12) + 12) % 12;
   return idx;

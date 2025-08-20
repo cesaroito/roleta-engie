@@ -11,32 +11,27 @@ import {
 import { gsap } from "gsap";
 import clsx from "classnames";
 
-/** Configuração */
-const IDLE_TIMEOUT_MS = 20_000; // 20s -> atrator
-const IDLE_SPEED_DPS = 6; // giro lento (~1 volta/min)
-const PRESS_HOLD_MAX_MS = 2_000; // 2s para força 100%
-const SWALLOW_AFTER_IDLE_MS = 200; // engole 1º toque pós-idle
+const IDLE_TIMEOUT_MS = 20_000;
+const IDLE_SPEED_DPS = 6;
+const PRESS_HOLD_MAX_MS = 2_000;
+const SWALLOW_AFTER_IDLE_MS = 200;
 
 export default function WheelScreen() {
   const { currentRotation, setRotation, setScreen, setWinner, slices } =
     useStore();
   const wheelRef = useRef<HTMLImageElement | null>(null);
-
   const [spinning, setSpinning] = useState(false);
 
-  // Press & Hold
   const [holdProgress, setHoldProgress] = useState(0);
   const holdActiveRef = useRef(false);
   const holdStartRef = useRef(0);
   const holdRafRef = useRef<number | null>(null);
 
-  // Rotação
   const rotationRef = useRef(currentRotation);
   useEffect(() => {
     rotationRef.current = currentRotation;
   }, [currentRotation]);
 
-  /** SFX one-shot (garante som no 1º clique) */
   function playSpinSfxOneShot() {
     try {
       const one = new Audio("/assets/sfx/spin.mp3");
@@ -48,7 +43,6 @@ export default function WheelScreen() {
     } catch {}
   }
 
-  /** Aplica rotação */
   function applyRotation(deg: number) {
     rotationRef.current = deg;
     setRotation(deg);
@@ -56,7 +50,7 @@ export default function WheelScreen() {
       wheelRef.current.style.transform = `rotate(${deg}deg)`;
   }
 
-  /** ----------------- IDLE / ATRATOR ----------------- */
+  // IDLE
   const isIdleRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
   const idleRafRef = useRef<number | null>(null);
@@ -103,18 +97,15 @@ export default function WheelScreen() {
       clearIdleTimer();
       stopIdleSpin();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** ----------------- GIRO ----------------- */
+  // GIRO
   function spin(_trigger: "button" | "swipe", force = 1) {
     if (spinning) return;
     registerInteraction();
     setSpinning(true);
 
-    // sorteio (usado só para calcular o alvo); o índice gravado será o FINAL (derivado da rotação)
-    const winnerDraft = secureRandomInt(slices.length);
-
+    const winnerDraft = secureRandomInt(slices.length); // só para calcular alvo
     const turns = Math.min(8, Math.max(5, Math.floor(5 + force * 3)));
     const base = rotationRef.current;
     const { target, duration } = computeTargetRotation(
@@ -123,7 +114,8 @@ export default function WheelScreen() {
       turns
     );
 
-    // alvo FINAL é exato (target)
+    playSpinSfxOneShot();
+
     const tween = { p: 0 };
     gsap.to(tween, {
       p: 1,
@@ -132,7 +124,6 @@ export default function WheelScreen() {
       onUpdate: () => applyRotation(base + (target - base) * tween.p),
       onComplete: () => {
         applyRotation(target);
-        // *** pega o índice REAL que está no ponteiro ***
         const finalIdx = winnerIndexFromRotation(rotationRef.current);
         setWinner(finalIdx);
         setSpinning(false);
@@ -141,7 +132,7 @@ export default function WheelScreen() {
     });
   }
 
-  /** ----------------- SWIPE ----------------- */
+  // SWIPE
   const touchInfo = useRef<{ t: number; x: number; y: number } | null>(null);
   function blockedByIdleSwallow() {
     return performance.now() < justStoppedIdleUntilRef.current;
@@ -160,21 +151,17 @@ export default function WheelScreen() {
     const dist = Math.hypot(dx, dy);
     const speed = dist / dt;
     const force = Math.min(1, speed * 3);
-    if (dist > 30) {
-      playSpinSfxOneShot();
-      spin("swipe", 1 + force);
-    }
+    if (dist > 30) spin("swipe", 1 + force);
     touchInfo.current = null;
   }
 
-  /** ------------- PRESS & HOLD (BOTÃO) -------------- */
+  // HOLD
   function startHold() {
     if (spinning || blockedByIdleSwallow()) return;
     registerInteraction();
     holdActiveRef.current = true;
     setHoldProgress(0);
     holdStartRef.current = performance.now();
-
     const step = () => {
       if (!holdActiveRef.current) return;
       const elapsed = performance.now() - holdStartRef.current;
@@ -190,7 +177,6 @@ export default function WheelScreen() {
     const elapsed = performance.now() - holdStartRef.current;
     const p = Math.min(1, elapsed / PRESS_HOLD_MAX_MS);
     setHoldProgress(0);
-    playSpinSfxOneShot();
     spin("button", 1 + p * 3);
   }
   function cancelHold() {
@@ -200,7 +186,7 @@ export default function WheelScreen() {
     setHoldProgress(0);
   }
 
-  /** ---- Captura 1º toque p/ parar o idle e ENGOLIR esse toque ---- */
+  // STOP idle on first touch
   function onAnyPointerDownCapture(e: React.PointerEvent) {
     if (isIdleRef.current) {
       e.preventDefault();
@@ -214,10 +200,9 @@ export default function WheelScreen() {
     if (!spinning) registerInteraction();
   }
 
-  /** ----------------- Modo de Calibração ----------------- */
+  // CALIBRAÇÃO
   const [calibOn, setCalibOn] = useState(false);
   const [calibDeg, setCalibDeg] = useState<number>(getStartCenterDeg());
-
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key.toLowerCase() === "c") {
@@ -229,7 +214,8 @@ export default function WheelScreen() {
         const v = (((calibDeg - step) % 360) + 360) % 360;
         setCalibDeg(v);
         setStartCenterDeg(v);
-      } else if (e.key === "]") {
+      }
+      if (e.key === "]") {
         const v = (((calibDeg + step) % 360) + 360) % 360;
         setCalibDeg(v);
         setStartCenterDeg(v);
@@ -242,11 +228,11 @@ export default function WheelScreen() {
   function Logo() {
     return (
       <img
-        src="/engie-logo.svg"
+        src="/engie-logo.png"
         onError={(ev) => {
           (ev.currentTarget as HTMLImageElement).src = "/engie-logo.png";
         }}
-        className="h-10"
+        className="h-10 relative z-[200]" // Adicione um z-index alto aqui
         alt="ENGIE"
       />
     );
@@ -254,11 +240,11 @@ export default function WheelScreen() {
 
   return (
     <div
-      className="w-full h-full bg-gradient-to-b from-white to-sky-50 flex flex-col items-center justify-start"
+      className="w-full h-full bg-white flex flex-col"
       onPointerDownCapture={onAnyPointerDownCapture}
     >
-      {/* Header com logo e chamada (z-40 para ficar sempre acima) */}
-      <div className="w-full px-6 py-4 flex items-center justify-between relative z-40">
+      {/* Header IGUAL ao QrScreen, mas protegido com z-index */}
+      <div className="w-full px-6 py-4 flex items-center justify-between relative z-[200]">
         <Logo />
         <div className="text-engieDark text-lg font-medium">
           Toque e gire a roleta
@@ -311,7 +297,7 @@ export default function WheelScreen() {
                   cy="390"
                   r="388"
                   fill="none"
-                  stroke="rgba(0,0,0,0.2)"
+                  stroke="rgba(0,0,0,0.15)"
                   strokeDasharray="4 6"
                 />
                 {Array.from({ length: 12 }).map((_, i) => {
@@ -326,15 +312,16 @@ export default function WheelScreen() {
                         x2={x2}
                         y2={y2}
                         stroke="#00AEEF"
-                        strokeWidth="2"
+                        strokeOpacity="0.8"
+                        strokeWidth="1.5"
                       />
-                      <circle cx={x2} cy={y2} r="4" fill="#00AEEF" />
+                      <circle cx={x2} cy={y2} r="3" fill="#00AEEF" />
                       <text
                         x={x2}
                         y={y2}
                         dx="6"
                         dy="-6"
-                        fontSize="14"
+                        fontSize="12"
                         fontWeight="700"
                         fill="#003A5D"
                       >
@@ -347,7 +334,7 @@ export default function WheelScreen() {
                   x="390"
                   y="30"
                   textAnchor="middle"
-                  fontSize="16"
+                  fontSize="14"
                   fill="#003A5D"
                 >
                   Calibração ON — offset={Math.round(calibDeg)}° | [ / ] (+/-1°)
@@ -375,7 +362,7 @@ export default function WheelScreen() {
           </div>
         </div>
 
-        {/* Overlay bloqueio (fica abaixo do header por causa do z-40 do header) */}
+        {/* Overlay de bloqueio (somente na área principal) */}
         {spinning && (
           <div
             className="absolute inset-0 z-30 cursor-not-allowed"
