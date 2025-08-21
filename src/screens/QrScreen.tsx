@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useStore } from "../state/useStore";
 
-const LINKTREE_URL = "https://linktr.ee/userful";
+const LINKTREE_URL = "https://linktr.ee/engiebrasil";
 
 function Logo() {
   return (
