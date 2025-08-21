@@ -7,10 +7,10 @@ export default function Wheel() {
   const spinTo = useStore((s) => s.spinTo);
 
   return (
-    <div className="relative mx-auto w-[min(86vw,720px)] aspect-square select-none">
+    <div className="relative mx-auto w-[min(90vw,900px)] aspect-square select-none">
       {/* Ponteiro fixo - topo, apontando para baixo */}
-      <div className="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-        <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[28px] border-t-sky-500 drop-shadow-md" />
+      <div className="pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+        <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[32px] border-t-sky-500 drop-shadow-md" />
       </div>
 
       {/* Disco que gira */}
@@ -33,11 +33,11 @@ export default function Wheel() {
       </div>
 
       {/* Botão GIRAR */}
-      <div className="absolute -bottom-20 left-1/2 -translate-x-1/2">
+      <div className="absolute -bottom-24 left-1/2 -translate-x-1/2">
         <button
           onClick={() => spinTo()}
           disabled={isSpinning}
-          className="px-6 py-3 rounded-2xl bg-sky-500 text-white font-semibold shadow disabled:opacity-50"
+          className="px-8 py-4 rounded-2xl bg-sky-500 text-white text-lg font-semibold shadow disabled:opacity-50"
         >
           GIRAR
         </button>
