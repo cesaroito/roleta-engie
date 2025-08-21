@@ -47,15 +47,15 @@ const SLICES: Slice[] = [
   { id: 0, label: "Be.U@Engie", kind: "BEU" },
   { id: 1, label: "Trilha de Carreiras Femininas", kind: "TRILHAS" },
   { id: 2, label: "Desafio", kind: "DESAFIO" },
-  { id: 3, label: "Ação (Roxa)", kind: "AÇÃO_ROXA" },
+  { id: 3, label: "Ação", kind: "AÇÃO_ROXA" },
   { id: 4, label: "Quiz", kind: "QUIZ" },
-  { id: 5, label: "Ação (Rosa)", kind: "AÇÃO_ROSA" },
+  { id: 5, label: "Ação", kind: "AÇÃO_ROSA" },
   { id: 6, label: "Desafio", kind: "DESAFIO" },
   { id: 7, label: "Trilha de Carreiras Femininas", kind: "TRILHAS" },
   { id: 8, label: "Be.U@Engie", kind: "BEU" },
-  { id: 9, label: "Ação (Roxa)", kind: "AÇÃO_ROXA" },
+  { id: 9, label: "Ação", kind: "AÇÃO_ROXA" },
   { id: 10, label: "Desafio", kind: "DESAFIO" },
-  { id: 11, label: "Ação (Rosa)", kind: "AÇÃO_ROSA" },
+  { id: 11, label: "Ação", kind: "AÇÃO_ROSA" },
 ];
 
 /** Calcula a rotação alvo para centralizar a fatia no topo (ponteiro fixo no topo) */

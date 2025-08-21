@@ -356,9 +356,6 @@ export default function WheelScreen() {
             >
               GIRAR
             </button>
-            <div className="text-center text-slate-500 text-sm mt-2">
-              Segure para aumentar a força • ou deslize na roleta
-            </div>
           </div>
         </div>
 

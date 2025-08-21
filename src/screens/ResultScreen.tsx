@@ -44,9 +44,7 @@ export default function ResultScreen() {
         { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" }
       );
     }
-    const t = setTimeout(() => setScreen("qr"), 5500);
-    return () => clearTimeout(t);
-  }, [setScreen]);
+  }, []); // roda apenas no mount; sem navegação automática
 
   const label =
     winnerIndex != null && slices[winnerIndex]
@@ -71,9 +69,7 @@ export default function ResultScreen() {
           <div className="text-5xl font-extrabold text-[#00AEEF] mb-6">
             {label}
           </div>
-          <div className="text-slate-600">
-            Aguarde um instante... vamos te mostrar nosso QR
-          </div>
+
           <div className="mt-8">
             <button
               className="px-8 py-3 rounded-xl bg-[#00AEEF] text-white text-xl font-semibold"
