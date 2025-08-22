@@ -44,7 +44,7 @@ export const SPIN_MS = 4500;
 
 /** Slices — ORDEM = posição na arte (sentido horário) */
 const SLICES: Slice[] = [
-  { id: 0, label: "Be.U@Engie", kind: "BEU" },
+  { id: 0, label: "Be.U@ENGIE", kind: "BEU" },
   { id: 1, label: "Trilha de Carreiras Femininas", kind: "TRILHAS" },
   { id: 2, label: "Desafio", kind: "DESAFIO" },
   { id: 3, label: "Ação", kind: "AÇÃO_ROXA" },
@@ -52,7 +52,7 @@ const SLICES: Slice[] = [
   { id: 5, label: "Ação", kind: "AÇÃO_ROSA" },
   { id: 6, label: "Desafio", kind: "DESAFIO" },
   { id: 7, label: "Trilha de Carreiras Femininas", kind: "TRILHAS" },
-  { id: 8, label: "Be.U@Engie", kind: "BEU" },
+  { id: 8, label: "Be.U@ENGIE", kind: "BEU" },
   { id: 9, label: "Ação", kind: "AÇÃO_ROXA" },
   { id: 10, label: "Desafio", kind: "DESAFIO" },
   { id: 11, label: "Ação", kind: "AÇÃO_ROSA" },
